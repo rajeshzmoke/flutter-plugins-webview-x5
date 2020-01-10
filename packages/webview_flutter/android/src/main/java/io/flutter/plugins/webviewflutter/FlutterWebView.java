@@ -10,8 +10,12 @@ import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
-import android.webkit.WebStorage;
-import android.webkit.WebViewClient;
+
+import com.tencent.smtt.sdk.ValueCallback;
+import com.tencent.smtt.sdk.WebStorage;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -24,7 +28,8 @@ import java.util.Map;
 
 public class FlutterWebView implements PlatformView, MethodCallHandler {
   private static final String JS_CHANNEL_NAMES_FIELD = "javascriptChannelNames";
-  private final InputAwareWebView webView;
+  // TODO Check needs of `InputAwareWebView` for X5
+  private final WebView webView;
   private final MethodChannel methodChannel;
   private final FlutterWebViewClient flutterWebViewClient;
   private final Handler platformThreadHandler;
@@ -42,7 +47,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     DisplayManager displayManager =
         (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
     displayListenerProxy.onPreWebViewInitialization(displayManager);
-    webView = new InputAwareWebView(context, containerView);
+    webView = new WebView(context);
     displayListenerProxy.onPostWebViewInitialization(displayManager);
 
     platformThreadHandler = new Handler(context.getMainLooper());
@@ -82,7 +87,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   // of Flutter but used as an override anyway wherever it's actually defined.
   // TODO(mklim): Add the @Override annotation once flutter/engine#9727 rolls to stable.
   public void onInputConnectionUnlocked() {
-    webView.unlockInputConnection();
+    // TODO Check needs of `InputAwareWebView` for X5
+//    webView.unlockInputConnection();
   }
 
   // @Override
@@ -92,7 +98,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   // of Flutter but used as an override anyway wherever it's actually defined.
   // TODO(mklim): Add the @Override annotation once flutter/engine#9727 rolls to stable.
   public void onInputConnectionLocked() {
-    webView.lockInputConnection();
+    // TODO Check needs of `InputAwareWebView` for X5
+//    webView.lockInputConnection();
   }
 
   // @Override
@@ -102,7 +109,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   // of Flutter but used as an override anyway wherever it's actually defined.
   // TODO(mklim): Add the @Override annotation once stable passes v1.10.9.
   public void onFlutterViewAttached(View flutterView) {
-    webView.setContainerView(flutterView);
+    // TODO Check needs of `InputAwareWebView` for X5
+//    webView.setContainerView(flutterView);
   }
 
   // @Override
@@ -112,7 +120,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   // of Flutter but used as an override anyway wherever it's actually defined.
   // TODO(mklim): Add the @Override annotation once stable passes v1.10.9.
   public void onFlutterViewDetached() {
-    webView.setContainerView(null);
+    // TODO Check needs of `InputAwareWebView` for X5
+//    webView.setContainerView(null);
   }
 
   @Override
@@ -219,7 +228,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     }
     webView.evaluateJavascript(
         jsString,
-        new android.webkit.ValueCallback<String>() {
+        new ValueCallback<String>() {
           @Override
           public void onReceiveValue(String value) {
             result.success(value);
@@ -317,7 +326,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   @Override
   public void dispose() {
     methodChannel.setMethodCallHandler(null);
-    webView.dispose();
+    // TODO Check needs of `InputAwareWebView` for X5
+//    webView.dispose();
     webView.destroy();
   }
 }

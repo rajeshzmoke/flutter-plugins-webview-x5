@@ -9,10 +9,11 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import androidx.webkit.WebViewClientCompat;
+
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
+
 import io.flutter.plugin.common.MethodChannel;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,8 +133,9 @@ class FlutterWebViewClient {
     };
   }
 
-  private WebViewClientCompat internalCreateWebViewClientCompat() {
-    return new WebViewClientCompat() {
+  // TODO: Check needs of `WebViewClientCompat` for X5
+  private WebViewClient internalCreateWebViewClientCompat() {
+    return new WebViewClient() {
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         return FlutterWebViewClient.this.shouldOverrideUrlLoading(view, request);

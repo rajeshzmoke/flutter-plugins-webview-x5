@@ -22,6 +22,7 @@ import android.webkit.WebView;
  *
  * <p>See also {@link ThreadedInputConnectionProxyAdapterView}.
  */
+// TODO Check needs of `InputAwareWebView` for X5
 final class InputAwareWebView extends WebView {
   private static final String TAG = "InputAwareWebView";
   private View threadedInputConnectionProxyView;
