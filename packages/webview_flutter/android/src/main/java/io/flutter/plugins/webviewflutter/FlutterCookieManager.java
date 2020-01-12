@@ -6,8 +6,9 @@ package io.flutter.plugins.webviewflutter;
 
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
-import android.webkit.CookieManager;
-import android.webkit.ValueCallback;
+
+import cn.codeshake.flutter.x5.CookieManager;
+import cn.codeshake.flutter.x5.ValueCallback;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -38,7 +39,7 @@ class FlutterCookieManager implements MethodCallHandler {
   }
 
   private static void clearCookies(final Result result) {
-    CookieManager cookieManager = CookieManager.getInstance();
+    CookieManager cookieManager = CookieManager.INSTANCE;
     final boolean hasCookies = cookieManager.hasCookies();
     if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
       cookieManager.removeAllCookies(

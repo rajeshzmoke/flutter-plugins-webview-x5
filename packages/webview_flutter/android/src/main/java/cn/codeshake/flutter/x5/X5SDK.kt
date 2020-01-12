@@ -34,6 +34,8 @@ class X5SDK(private val context: Context, messenger: BinaryMessenger) : MethodCh
 
             override fun onViewInitFinished(success: Boolean) {
                 result.success(success)
+
+                if (success) CookieManager.onX5Initialized()
             }
         })
     }
