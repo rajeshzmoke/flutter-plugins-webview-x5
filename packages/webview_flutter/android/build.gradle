@@ -20,6 +20,8 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -37,4 +39,8 @@ android {
         implementation 'androidx.webkit:webkit:1.0.0'
         implementation 'com.tencent.tbs.tbssdk:sdk:43697'
     }
+}
+dependencies {
+    implementation "androidx.core:core-ktx:1.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

@@ -5,7 +5,7 @@
 A Flutter plugin that provides a WebView widget.
 
 On iOS the WebView widget is backed by a [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview);
-On Android the WebView widget is backed by a [WebView](https://developer.android.com/reference/android/webkit/WebView).
+On Android the WebView widget is backed by a Tencent X5 [WebView](https://x5.tencent.com).
 
 ## Developers Preview Status
 The plugin relies on Flutter's new mechanism for embedding Android and iOS views.
@@ -34,3 +34,8 @@ Add `webview_flutter` as a [dependency in your pubspec.yaml file](https://flutte
 
 You can now include a WebView widget in your widget tree.
 See the WebView widget's Dartdoc for more details on how to use the widget.
+
+### Requirements
+
+1. X5 requires additional permissions, `WRITE_EXTERNAL_STORAGE`, `ACCESS_NETWORK_STATE`
+2. X5 doesn't support 64-bit, so `target-platform` option is required.

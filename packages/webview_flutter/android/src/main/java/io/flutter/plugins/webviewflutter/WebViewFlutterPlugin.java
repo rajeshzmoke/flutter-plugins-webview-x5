@@ -4,6 +4,7 @@
 
 package io.flutter.plugins.webviewflutter;
 
+import cn.codeshake.flutter.x5.X5SDK;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
@@ -19,6 +20,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class WebViewFlutterPlugin implements FlutterPlugin {
 
   private FlutterCookieManager flutterCookieManager;
+  private X5SDK x5SDK;
 
   /**
    * Add an instance of this to {@link io.flutter.embedding.engine.plugins.PluginRegistry} to
@@ -60,6 +62,7 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
         .registerViewFactory(
             "plugins.flutter.io/webview", new WebViewFactory(messenger, /*containerView=*/ null));
     flutterCookieManager = new FlutterCookieManager(messenger);
+    x5SDK = new X5SDK(binding.getApplicationContext(), messenger);
   }
 
   @Override
@@ -70,5 +73,8 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
 
     flutterCookieManager.dispose();
     flutterCookieManager = null;
+
+    x5SDK.dispose();
+    x5SDK = null;
   }
 }

@@ -6,8 +6,10 @@
 
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter/x5/x5_sdk.dart';
 
 void main() => runApp(MaterialApp(home: WebViewExample()));
 
@@ -36,11 +38,29 @@ class _WebViewExampleState extends State<WebViewExample> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
+  bool _hasInitializedSuccess;
+
+  @override
+  void initState() {
+    super.initState();
+
+    X5SDK()?.init()?.then((success) {
+          setState(() => _hasInitializedSuccess = success);
+        }) ??
+        (_hasInitializedSuccess = false);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_hasInitializedSuccess == null) {
+      return Material(child: Center(child: Text('Initializing X5')));
+    }
+
+    final title = _hasInitializedSuccess ? Text('X5 WebView example') : null;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter WebView example'),
+        title: title ?? const Text('Flutter WebView example'),
         // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
         actions: <Widget>[
           NavigationControls(_controller.future),

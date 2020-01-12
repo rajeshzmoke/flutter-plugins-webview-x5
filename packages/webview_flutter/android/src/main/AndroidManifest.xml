@@ -1,2 +1,9 @@
-<manifest package="io.flutter.plugins.webviewflutter">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="io.flutter.plugins.webviewflutter">
+
+  <uses-permission android:name="android.permission.INTERNET" />
+  <!-- Required, at least to download X5 core -->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <!-- Required, otherwise it might crash on opening X5 WebView -->
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
