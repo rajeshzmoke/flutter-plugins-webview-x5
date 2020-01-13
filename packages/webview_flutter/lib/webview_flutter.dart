@@ -64,6 +64,20 @@ enum NavigationDecision {
   navigate,
 }
 
+/// Describes the state of mixed content(e.g. http content in https pages) support in a given web view.
+///
+/// Only works in Android.
+enum MixedContentMode {
+  /// MIXED_CONTENT_ALWAYS_ALLOW option
+  alwaysAllow,
+
+  /// MIXED_CONTENT_NEVER_ALLOW
+  neverAllow,
+
+  /// MIXED_CONTENT_COMPATIBILITY_MODE in Android
+  compatibilityMode,
+}
+
 /// Decides how to handle a specific navigation request.
 ///
 /// The returned [NavigationDecision] determines how the navigation described by
@@ -150,6 +164,7 @@ class WebView extends StatefulWidget {
     this.debuggingEnabled = false,
     this.gestureNavigationEnabled = false,
     this.userAgent,
+    this.mixedContentMode,
     this.initialMediaPlaybackPolicy =
         AutoMediaPlaybackPolicy.require_user_action_for_all_media_types,
   })  : assert(javascriptMode != null),
@@ -311,6 +326,14 @@ class WebView extends StatefulWidget {
   /// By default `userAgent` is null.
   final String userAgent;
 
+  /// Controls whether mixed content is allowed to load.
+  ///
+  /// This only works on Android.
+  /// For iOS, you can change the settings in info.plist.
+  ///
+  /// By default `mixedContentMode` is null as Android platform.
+  final MixedContentMode mixedContentMode;
+
   /// Which restrictions apply on automatic media playback.
   ///
   /// This initial value is applied to the platform's webview upon creation. Any following
@@ -391,6 +414,7 @@ WebSettings _webSettingsFromWidget(WebView widget) {
     javascriptMode: widget.javascriptMode,
     hasNavigationDelegate: widget.navigationDelegate != null,
     debuggingEnabled: widget.debuggingEnabled,
+    mixedContentMode: widget.mixedContentMode,
     gestureNavigationEnabled: widget.gestureNavigationEnabled,
     userAgent: WebSetting<String>.of(widget.userAgent),
   );

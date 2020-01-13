@@ -10,6 +10,7 @@ import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.webkit.WebSettings;
 
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebStorage;
@@ -268,6 +269,13 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
         case "jsMode":
           updateJsMode((Integer) settings.get(key));
           break;
+        case "mixedContentMode": {
+          Object value = settings.get(key);
+          if (value != null) {
+            updateMixedContentMode((Integer) value);
+          }
+          break;
+        }
         case "hasNavigationDelegate":
           final boolean hasNavigationDelegate = (boolean) settings.get(key);
 
@@ -302,6 +310,24 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
         break;
       default:
         throw new IllegalArgumentException("Trying to set unknown JavaScript mode: " + mode);
+    }
+  }
+
+  private void updateMixedContentMode(int mode) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      switch (mode) {
+        case 0:
+          webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+          break;
+        case 1:
+          webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+          break;
+        case 2:
+          webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+          break;
+        default:
+          throw new IllegalArgumentException("Trying to set unknown mixed content mode: " + mode);
+      }
     }
   }
 

@@ -37,5 +37,9 @@ See the WebView widget's Dartdoc for more details on how to use the widget.
 
 ### Requirements
 
+1. Android `mixedContentMode` requires `usesCleartextTraffic` in `AndroidManifest.xml`;
+
+### X5 Requirements
+
 1. X5 requires additional permissions, `WRITE_EXTERNAL_STORAGE`, `ACCESS_NETWORK_STATE`
 2. X5 doesn't support 64-bit, so `target-platform` option is required.
