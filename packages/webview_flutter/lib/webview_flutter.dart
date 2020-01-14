@@ -144,6 +144,7 @@ class WebView extends StatefulWidget {
     this.javascriptMode = JavascriptMode.disabled,
     this.javascriptChannels,
     this.navigationDelegate,
+    this.navigationDelegateUrlPattern,
     this.gestureRecognizers,
     this.onPageStarted,
     this.onPageFinished,
@@ -261,6 +262,11 @@ class WebView extends StatefulWidget {
   ///       webview, and frames will be opened in the main frame.
   ///     * When a navigationDelegate is set HTTP requests do not include the HTTP referer header.
   final NavigationDelegate navigationDelegate;
+  
+  /// If specified, only those URL's matching this pattern would be handled by [navigationDelegate].
+  /// 
+  /// Only works for Android.
+  final String navigationDelegateUrlPattern;
 
   /// Invoked when a page starts loading.
   final PageStartedCallback onPageStarted;
@@ -390,6 +396,7 @@ WebSettings _webSettingsFromWidget(WebView widget) {
   return WebSettings(
     javascriptMode: widget.javascriptMode,
     hasNavigationDelegate: widget.navigationDelegate != null,
+    navigationDelegateUrlPattern: widget.navigationDelegateUrlPattern,
     debuggingEnabled: widget.debuggingEnabled,
     gestureNavigationEnabled: widget.gestureNavigationEnabled,
     userAgent: WebSetting<String>.of(widget.userAgent),

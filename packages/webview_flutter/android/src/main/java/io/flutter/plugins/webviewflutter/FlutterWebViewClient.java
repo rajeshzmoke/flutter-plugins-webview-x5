@@ -16,6 +16,7 @@ import androidx.webkit.WebViewClientCompat;
 import io.flutter.plugin.common.MethodChannel;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 // We need to use WebViewClientCompat to get
 // shouldOverrideUrlLoading(WebView view, WebResourceRequest request)
@@ -25,9 +26,14 @@ class FlutterWebViewClient {
   private static final String TAG = "FlutterWebViewClient";
   private final MethodChannel methodChannel;
   private boolean hasNavigationDelegate;
+  private Pattern navigationDelegateUrlPattern;
 
   FlutterWebViewClient(MethodChannel methodChannel) {
     this.methodChannel = methodChannel;
+  }
+
+  public void setNavigationDelegateUrlPattern(String pattern) {
+    navigationDelegateUrlPattern = pattern != null ? Pattern.compile(pattern) : null;
   }
 
   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -35,6 +41,12 @@ class FlutterWebViewClient {
     if (!hasNavigationDelegate) {
       return false;
     }
+    if (navigationDelegateUrlPattern != null
+            && !navigationDelegateUrlPattern.matcher(request.getUrl().toString()).matches()) {
+      // If specified, only those URL's matching the given pattern would be handled by Dart
+      return false;
+    }
+
     notifyOnNavigationRequest(
         request.getUrl().toString(), request.getRequestHeaders(), view, request.isForMainFrame());
     // We must make a synchronous decision here whether to allow the navigation or not,
