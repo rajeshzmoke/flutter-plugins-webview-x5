@@ -50,6 +50,7 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
             "plugins.flutter.io/webview",
             new WebViewFactory(registrar.messenger(), registrar.view()));
     new FlutterCookieManager(registrar.messenger());
+    new X5SDK(registrar.context(), registrar.messenger());
   }
 
   @Override
