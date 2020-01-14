@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -143,6 +144,10 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
 
     _addIfNonNull('jsMode', settings.javascriptMode?.index);
     _addIfNonNull('hasNavigationDelegate', settings.hasNavigationDelegate);
+    if (Platform.isAndroid) {
+      // only works in Android
+      _addIfNonNull('navigationDelegateUrlPattern', settings.navigationDelegateUrlPattern);
+    }
     _addIfNonNull('debuggingEnabled', settings.debuggingEnabled);
     _addIfNonNull('mixedContentMode', settings.mixedContentMode?.index);
     _addIfNonNull(
