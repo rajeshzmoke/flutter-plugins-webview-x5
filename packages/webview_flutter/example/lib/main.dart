@@ -115,6 +115,7 @@ class _WebViewExampleState extends State<WebViewExample> {
 enum MenuOptions {
   showUserAgent,
   listCookies,
+  setCookies,
   clearCookies,
   addToCache,
   listCache,
@@ -143,6 +144,9 @@ class SampleMenu extends StatelessWidget {
               case MenuOptions.listCookies:
                 _onListCookies(controller.data, context);
                 break;
+              case MenuOptions.setCookies:
+                _onSetCookies(controller.data, context);
+                break;
               case MenuOptions.clearCookies:
                 _onClearCookies(context);
                 break;
@@ -169,6 +173,10 @@ class SampleMenu extends StatelessWidget {
             const PopupMenuItem<MenuOptions>(
               value: MenuOptions.listCookies,
               child: Text('List cookies'),
+            ),
+            const PopupMenuItem<MenuOptions>(
+              value: MenuOptions.setCookies,
+              child: Text('Set cookies'),
             ),
             const PopupMenuItem<MenuOptions>(
               value: MenuOptions.clearCookies,
@@ -218,6 +226,21 @@ class SampleMenu extends StatelessWidget {
         ],
       ),
     ));
+  }
+
+  void _onSetCookies(WebViewController controller, BuildContext context) async {
+    String url = await controller.currentUrl();
+    await CookieManager().setCookie(url, 'test1', '1');
+    await CookieManager().setCookie(url, 'test2-domain', '2',
+        domain: '.flutter.dev');
+    await CookieManager().setCookie(url, 'test3-expires-1d', '3',
+        expires: DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch);
+    await CookieManager().setCookie(url, 'test4-maxAge-1h', '4',
+        maxAge: 3600);
+    await CookieManager().setCookie(url, 'test5-secure-httpOnly', '5',
+        secure: true, httpOnly: true);
+
+    _onListCookies(controller, context);
   }
 
   void _onAddToCache(WebViewController controller, BuildContext context) async {

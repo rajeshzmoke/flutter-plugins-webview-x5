@@ -362,6 +362,12 @@ abstract class WebViewPlatform {
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   });
 
+  /// Set a cookie for the given url.
+  Future<bool> setCookie(Map<String, dynamic> args) {
+    throw UnimplementedError(
+        "WebView setCookie is not implemented on the current platform");
+  }
+
   /// Clears all cookies for all [WebView] instances.
   ///
   /// Returns true if cookies were present before clearing, else false.

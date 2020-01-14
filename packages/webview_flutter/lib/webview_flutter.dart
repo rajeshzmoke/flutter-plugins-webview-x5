@@ -672,6 +672,39 @@ class CookieManager {
 
   static CookieManager _instance;
 
+  /// Set a cookie for the given [url].
+  ///
+  /// The default [domain] value is the domain name of [url].
+  Future<bool> setCookie(String url, String name, String value,
+      {String domain,
+        String path = "/",
+        int expires,
+        int maxAge,
+        bool secure,
+        bool httpOnly}) async {
+    domain ??= _parseDomainFromUrl(url);
+
+    assert(url != null && url.isNotEmpty);
+    assert(name != null && name.isNotEmpty);
+    assert(value != null && value.isNotEmpty);
+    assert(domain != null && domain.isNotEmpty);
+    assert(path != null && path.isNotEmpty);
+
+    Map<String, dynamic> args = <String, dynamic>{};
+    args
+      ..['url'] = url
+      ..['name'] = name
+      ..['value'] = value
+      ..['domain'] = domain
+      ..['path'] = path;
+    if (expires != null) args['expires'] = expires;
+    if (maxAge != null) args['maxAge'] = maxAge;
+    if (secure != null) args['secure'] = secure;
+    if (httpOnly != null) args['httpOnly'] = httpOnly;
+
+    return await WebView._platform.setCookie(args);
+  }
+
   /// Clears all cookies for all [WebView] instances.
   ///
   /// This is a no op on iOS version smaller than 9.
@@ -690,4 +723,9 @@ void _validateUrlString(String url) {
   } on FormatException catch (e) {
     throw ArgumentError(e);
   }
+}
+
+String _parseDomainFromUrl(String url) {
+  final host = Uri.parse(url).host;
+  return host.startsWith('www.') ? host.substring(4) : host;
 }
