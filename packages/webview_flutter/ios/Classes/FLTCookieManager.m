@@ -17,10 +17,47 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
-  if ([[call method] isEqualToString:@"clearCookies"]) {
+  if ([[call method] isEqualToString:@"setCookie"]) {
+    [self setCookie:call result:result];
+  } else if ([[call method] isEqualToString:@"clearCookies"]) {
     [self clearCookies:result];
   } else {
     result(FlutterMethodNotImplemented);
+  }
+}
+
+- (void)setCookie:(FlutterMethodCall *)call result: (FlutterResult)result {
+  if (@available(iOS 11.0, *)) {
+    NSString *url = call.arguments[@"url"];
+    NSString *name = call.arguments[@"name"];
+    NSString *value = call.arguments[@"value"];
+    NSString *domain = call.arguments[@"domain"];
+    NSString *path = call.arguments[@"path"];
+    NSInteger expires = ((NSNumber *) call.arguments[@"expires"]).longValue / 1000;
+    NSInteger maxAge = ((NSNumber *) call.arguments[@"maxAge"]).intValue;
+    bool secure = (bool) call.arguments[@"secure"];
+    bool httpOnly = (bool) call.arguments[@"httpOnly"];
+
+    WKHTTPCookieStore *cookieStore = [[WKWebsiteDataStore defaultDataStore] httpCookieStore];
+    NSMutableDictionary<NSHTTPCookiePropertyKey,id> *properties = [[NSMutableDictionary alloc] initWithDictionary: @{
+      NSHTTPCookieOriginURL: url,
+      NSHTTPCookieName: name,
+      NSHTTPCookieValue: value,
+      NSHTTPCookieDomain: domain,
+      NSHTTPCookiePath: path,
+    }];
+    if (expires != 0) [properties setValue:[NSDate dateWithTimeIntervalSince1970: expires] forKey: NSHTTPCookieExpires];
+    if (maxAge != 0) [properties setValue:@(maxAge) forKey: NSHTTPCookieMaximumAge];
+    if (secure) [properties setValue:@(YES) forKey: NSHTTPCookieSecure];
+    if (httpOnly) [properties setValue:@(YES) forKey:@"HttpOnly"];
+
+    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties: properties];
+    [cookieStore setCookie:cookie completionHandler:^() {
+      result(@(YES));
+    }];
+  } else {
+    NSLog(@"Setting cookies is not supported for Flutter WebViews prior to iOS 11.");
+    result(@(NO));
   }
 }
 

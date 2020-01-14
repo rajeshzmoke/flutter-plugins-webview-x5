@@ -111,6 +111,13 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
   @override
   Future<String> getTitle() => _channel.invokeMethod<String>("getTitle");
 
+  /// Method channel implementation for [WebViewPlatform.setCookie].
+  static Future<bool> setCookie(Map<String, dynamic> args) {
+    return _cookieManagerChannel
+        .invokeMethod<bool>('setCookie', args)
+        .then<bool>((dynamic result) => result);
+  }
+
   /// Method channel implementation for [WebViewPlatform.clearCookies].
   static Future<bool> clearCookies() {
     return _cookieManagerChannel
