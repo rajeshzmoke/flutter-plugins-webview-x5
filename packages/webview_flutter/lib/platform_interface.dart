@@ -257,7 +257,7 @@ class WebSettings {
   /// See also [WebView.userAgent].
   final WebSetting<String> userAgent;
 
-  /// The mixed content to be used by the webview.
+  /// The mixed content mode to be used by the webview.
   ///
   /// See also: [WebView.mixedContentMode]
   final MixedContentMode mixedContentMode;

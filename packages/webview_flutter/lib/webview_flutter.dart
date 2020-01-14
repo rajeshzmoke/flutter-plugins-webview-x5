@@ -67,14 +67,17 @@ enum NavigationDecision {
 /// Describes the state of mixed content(e.g. http content in https pages) support in a given web view.
 ///
 /// Only works in Android.
+///
+/// See also https://developer.android.com/reference/android/webkit/WebSettings.html#MIXED_CONTENT_ALWAYS_ALLOW
+/// for these 3 options.
 enum MixedContentMode {
-  /// MIXED_CONTENT_ALWAYS_ALLOW option
+  /// See also Android `MIXED_CONTENT_ALWAYS_ALLOW` option
   alwaysAllow,
 
-  /// MIXED_CONTENT_NEVER_ALLOW
+  /// See also Android `MIXED_CONTENT_NEVER_ALLOW` option
   neverAllow,
 
-  /// MIXED_CONTENT_COMPATIBILITY_MODE in Android
+  /// See also Android `MIXED_CONTENT_COMPATIBILITY_MODE` option
   compatibilityMode,
 }
 
@@ -331,7 +334,7 @@ class WebView extends StatefulWidget {
   /// This only works on Android.
   /// For iOS, you can change the settings in info.plist.
   ///
-  /// By default `mixedContentMode` is null as Android platform.
+  /// By default `mixedContentMode` is null, and Android would use its own default.
   final MixedContentMode mixedContentMode;
 
   /// Which restrictions apply on automatic media playback.
