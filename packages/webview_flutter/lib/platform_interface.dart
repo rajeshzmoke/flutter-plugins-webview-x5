@@ -230,6 +230,7 @@ class WebSettings {
   WebSettings({
     this.javascriptMode,
     this.hasNavigationDelegate,
+    this.navigationDelegateUrlPattern,
     this.debuggingEnabled,
     this.mixedContentMode,
     this.gestureNavigationEnabled,
@@ -241,6 +242,9 @@ class WebSettings {
 
   /// Whether the [WebView] has a [NavigationDelegate] set.
   final bool hasNavigationDelegate;
+  
+  /// URL pattern that would be handled by Dart.
+  final String navigationDelegateUrlPattern;
 
   /// Whether to enable the platform's webview content debugging tools.
   ///
