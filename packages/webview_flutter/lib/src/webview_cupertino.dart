@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 
 import '../platform_interface.dart';
 import 'webview_method_channel.dart';
+import 'webview_method_channel.dart';
 
 /// Builds an iOS webview.
 ///
@@ -44,4 +45,8 @@ class CupertinoWebView implements WebViewPlatform {
 
   @override
   Future<bool> clearCookies() => MethodChannelWebViewPlatform.clearCookies();
+
+  @override
+  Future<bool> setCookie(Map<String, dynamic> args) =>
+      MethodChannelWebViewPlatform.setCookie(args);
 }
