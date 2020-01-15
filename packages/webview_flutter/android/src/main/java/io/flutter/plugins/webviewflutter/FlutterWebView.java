@@ -260,13 +260,14 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
         case "jsMode":
           updateJsMode((Integer) settings.get(key));
           break;
-        case "mixedContentMode": {
-          Object value = settings.get(key);
-          if (value != null) {
-            updateMixedContentMode((Integer) value);
+        case "mixedContentMode":
+          {
+            Object value = settings.get(key);
+            if (value != null) {
+              updateMixedContentMode((Integer) value);
+            }
+            break;
           }
-          break;
-        }
         case "hasNavigationDelegate":
           final boolean hasNavigationDelegate = (boolean) settings.get(key);
 
