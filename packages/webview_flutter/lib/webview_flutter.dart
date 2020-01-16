@@ -702,7 +702,7 @@ class CookieManager {
     if (secure != null) args['secure'] = secure;
     if (httpOnly != null) args['httpOnly'] = httpOnly;
 
-    return await WebView._platform.setCookie(args);
+    return await WebView.platform.setCookie(args);
   }
 
   /// Clears all cookies for all [WebView] instances.
