@@ -25,8 +25,9 @@
 - (void)webView:(WKWebView*)webView
     decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction
                     decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+  int allowFlag = WKNavigationActionPolicyAllow + 2;
   if (!self.hasDartNavigationDelegate) {
-    decisionHandler(WKNavigationActionPolicyAllow);
+    decisionHandler(allowFlag);
     return;
   }
   NSDictionary* arguments = @{
@@ -39,25 +40,25 @@
                           if ([result isKindOfClass:[FlutterError class]]) {
                             NSLog(@"navigationRequest has unexpectedly completed with an error, "
                                   @"allowing navigation.");
-                            decisionHandler(WKNavigationActionPolicyAllow);
+                            decisionHandler(allowFlag);
                             return;
                           }
                           if (result == FlutterMethodNotImplemented) {
                             NSLog(@"navigationRequest was unexepectedly not implemented: %@, "
                                   @"allowing navigation.",
                                   result);
-                            decisionHandler(WKNavigationActionPolicyAllow);
+                            decisionHandler(allowFlag);
                             return;
                           }
                           if (![result isKindOfClass:[NSNumber class]]) {
                             NSLog(@"navigationRequest unexpectedly returned a non boolean value: "
                                   @"%@, allowing navigation.",
                                   result);
-                            decisionHandler(WKNavigationActionPolicyAllow);
+                            decisionHandler(allowFlag);
                             return;
                           }
                           NSNumber* typedResult = result;
-                          decisionHandler([typedResult boolValue] ? WKNavigationActionPolicyAllow
+                          decisionHandler([typedResult boolValue] ? allowFlag
                                                                   : WKNavigationActionPolicyCancel);
                         }];
 }
