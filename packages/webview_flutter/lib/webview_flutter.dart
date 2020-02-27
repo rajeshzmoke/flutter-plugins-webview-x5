@@ -96,6 +96,9 @@ typedef void PageStartedCallback(String url);
 /// Signature for when a [WebView] has finished loading a page.
 typedef void PageFinishedCallback(String url);
 
+/// Signature for when a [WebView] is loading a page.
+typedef void PageLoadingCallback(int progress);
+
 /// Specifies possible restrictions on automatic media playback.
 ///
 /// This is typically used in [WebView.initialMediaPlaybackPolicy].
@@ -165,6 +168,7 @@ class WebView extends StatefulWidget {
     this.gestureRecognizers,
     this.onPageStarted,
     this.onPageFinished,
+    this.onProgress,
     this.debuggingEnabled = false,
     this.gestureNavigationEnabled = false,
     this.userAgent,
@@ -301,6 +305,9 @@ class WebView extends StatefulWidget {
   /// [WebViewController.evaluateJavascript] can assume this.
   final PageFinishedCallback onPageFinished;
 
+  /// Invoked when a page is loading.
+  final PageLoadingCallback onProgress;
+
   /// Controls whether WebView debugging is enabled.
   ///
   /// Setting this to true enables [WebView debugging on Android](https://developers.google.com/web/tools/chrome-devtools/remote-debugging/).
@@ -423,6 +430,7 @@ WebSettings _webSettingsFromWidget(WebView widget) {
     javascriptMode: widget.javascriptMode,
     hasNavigationDelegate: widget.navigationDelegate != null,
     navigationDelegateUrlPattern: widget.navigationDelegateUrlPattern,
+    hasProgressTracking: widget.onProgress != null,
     debuggingEnabled: widget.debuggingEnabled,
     mixedContentMode: widget.mixedContentMode,
     gestureNavigationEnabled: widget.gestureNavigationEnabled,
@@ -435,6 +443,7 @@ WebSettings _clearUnchangedWebSettings(
     WebSettings currentValue, WebSettings newValue) {
   assert(currentValue.javascriptMode != null);
   assert(currentValue.hasNavigationDelegate != null);
+  assert(currentValue.hasProgressTracking != null);
   assert(currentValue.debuggingEnabled != null);
   assert(currentValue.userAgent.isPresent);
   assert(newValue.javascriptMode != null);
@@ -444,6 +453,7 @@ WebSettings _clearUnchangedWebSettings(
 
   JavascriptMode javascriptMode;
   bool hasNavigationDelegate;
+  bool hasProgressTracking;
   bool debuggingEnabled;
   WebSetting<String> userAgent = WebSetting<String>.absent();
   if (currentValue.javascriptMode != newValue.javascriptMode) {
@@ -451,6 +461,9 @@ WebSettings _clearUnchangedWebSettings(
   }
   if (currentValue.hasNavigationDelegate != newValue.hasNavigationDelegate) {
     hasNavigationDelegate = newValue.hasNavigationDelegate;
+  }
+  if (currentValue.hasProgressTracking != newValue.hasProgressTracking) {
+    hasProgressTracking = newValue.hasProgressTracking;
   }
   if (currentValue.debuggingEnabled != newValue.debuggingEnabled) {
     debuggingEnabled = newValue.debuggingEnabled;
@@ -462,6 +475,7 @@ WebSettings _clearUnchangedWebSettings(
   return WebSettings(
     javascriptMode: javascriptMode,
     hasNavigationDelegate: hasNavigationDelegate,
+    hasProgressTracking: hasProgressTracking,
     debuggingEnabled: debuggingEnabled,
     userAgent: userAgent,
   );
@@ -513,6 +527,13 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
   void onPageFinished(String url) {
     if (_widget.onPageFinished != null) {
       _widget.onPageFinished(url);
+    }
+  }
+
+  @override
+  void onProgress(int progress) {
+    if (_widget.onProgress != null) {
+      _widget.onProgress(progress);
     }
   }
 

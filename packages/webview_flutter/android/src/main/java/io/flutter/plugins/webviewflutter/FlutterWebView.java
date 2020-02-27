@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -287,6 +288,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
               flutterWebViewClient.createWebViewClient(hasNavigationDelegate);
 
           webView.setWebViewClient(webViewClient);
+
           break;
         case "navigationDelegateUrlPattern":
           flutterWebViewClient.setNavigationDelegateUrlPattern((String) settings.get(key));
@@ -296,6 +298,16 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
           webView.setWebContentsDebuggingEnabled(debuggingEnabled);
           break;
+        case "hasProgressTracking":
+          final boolean progressTrackingEnabled = (boolean) settings.get(key);
+          if (progressTrackingEnabled) {
+            webView.setWebChromeClient(
+                new WebChromeClient() {
+                  public void onProgressChanged(WebView view, int progress) {
+                    flutterWebViewClient.onLoadingProgress(progress);
+                  }
+                });
+          }
         case "gestureNavigationEnabled":
           break;
         case "userAgent":

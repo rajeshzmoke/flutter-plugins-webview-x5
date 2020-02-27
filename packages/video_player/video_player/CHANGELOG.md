@@ -1,3 +1,11 @@
+## 0.10.5+3
+
+* Add integration instructions for the `web` platform.
+
+## 0.10.5+2
+
+* Make sure the plugin is correctly initialized
+
 ## 0.10.5+1
 
 * Fixes issue where `initialize()` `Future` stalls when failing to load source

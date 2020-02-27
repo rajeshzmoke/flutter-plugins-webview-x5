@@ -27,6 +27,7 @@ class FlutterWebViewClient {
   private final MethodChannel methodChannel;
   private boolean hasNavigationDelegate;
   private Pattern navigationDelegateUrlPattern;
+  private boolean hasProgressTracking;
 
   FlutterWebViewClient(MethodChannel methodChannel) {
     this.methodChannel = methodChannel;
@@ -89,6 +90,12 @@ class FlutterWebViewClient {
     Map<String, Object> args = new HashMap<>();
     args.put("url", url);
     methodChannel.invokeMethod("onPageFinished", args);
+  }
+
+  void onLoadingProgress(int progress) {
+    Map<String, Object> args = new HashMap<>();
+    args.put("progress", progress);
+    methodChannel.invokeMethod("onProgress", args);
   }
 
   private void notifyOnNavigationRequest(

@@ -1,5 +1,11 @@
+## 0.3.20
+
+* Add progress tracking support.
+
 ## 0.3.19+5
 
+* On iOS, always keep contentInsets of the WebView to be 0.
+* Fix XCTest case to follow XCTest naming convention.
 * Add `mixedContentMode` option for Android WebView.
 
 ## 0.3.19+4
