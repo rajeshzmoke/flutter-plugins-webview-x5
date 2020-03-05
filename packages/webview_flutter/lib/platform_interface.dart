@@ -31,6 +31,9 @@ abstract class WebViewPlatformCallbacksHandler {
 
   /// Invoked by [WebViewPlatformController] when a page is loading.
   void onProgress(int progress);
+
+  /// Invoked by [WebViewPlatformController] when a page's orientation was changed.
+  void onScreenOrientationChanged(bool isLandscape);
 }
 
 /// Interface for talking to the webview's platform implementation.
@@ -167,6 +170,12 @@ abstract class WebViewPlatformController {
 
   /// Returns the title of the currently loaded page.
   Future<String> getTitle() {
+    throw UnimplementedError(
+        "WebView getTitle is not implemented on the current platform");
+  }
+
+  /// Returns the state of exit fullscreen.
+  Future<bool> exitFullscreen() {
     throw UnimplementedError(
         "WebView getTitle is not implemented on the current platform");
   }

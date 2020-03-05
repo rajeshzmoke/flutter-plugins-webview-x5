@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -33,6 +34,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
   private final InputAwareWebView webView;
   private final MethodChannel methodChannel;
   private final FlutterWebViewClient flutterWebViewClient;
+  private final FlutterWebChromeClient flutterWebChromeClient;
   private final Handler platformThreadHandler;
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -57,6 +59,11 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
     methodChannel = new MethodChannel(messenger, "plugins.flutter.io/webview_" + id);
     methodChannel.setMethodCallHandler(this);
+
+    // function: using for video fullscreen
+    flutterWebChromeClient = new FlutterWebChromeClient(context,
+            methodChannel, (ViewGroup) webView.getRootView());
+    webView.setWebChromeClient(flutterWebChromeClient);
 
     webView.setWebChromeClient(new WebChromeClient() {
       @Override
@@ -171,6 +178,8 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       case "getTitle":
         getTitle(result);
         break;
+      case "exitFullscreen":
+        exitFullscreen(result);
       default:
         result.notImplemented();
     }
@@ -265,6 +274,10 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
 
   private void getTitle(Result result) {
     result.success(webView.getTitle());
+  }
+
+  private void exitFullscreen(Result result) {
+    result.success(flutterWebChromeClient.exitFullscreen());
   }
 
   private void applySettings(Map<String, Object> settings) {

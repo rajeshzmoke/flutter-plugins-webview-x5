@@ -47,6 +47,9 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
       case 'onPageStarted':
         _platformCallbacksHandler.onPageStarted(call.arguments['url']);
         return null;
+      case 'onScreenOrientationChanged':
+        _platformCallbacksHandler.onScreenOrientationChanged(call.arguments['isLandscape']);
+        return null;
     }
     throw MissingPluginException(
         '${call.method} was invoked but has no handler');
@@ -121,6 +124,9 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
         .invokeMethod<bool>('setCookie', args)
         .then<bool>((dynamic result) => result);
   }
+
+  @override
+  Future<bool> exitFullscreen() => _channel.invokeMethod<bool>("exitFullscreen");
 
   /// Method channel implementation for [WebViewPlatform.clearCookies].
   static Future<bool> clearCookies() {

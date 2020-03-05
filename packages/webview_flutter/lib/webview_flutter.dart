@@ -99,6 +99,9 @@ typedef void PageFinishedCallback(String url);
 /// Signature for when a [WebView] is loading a page.
 typedef void PageLoadingCallback(int progress);
 
+/// Signature for when a [WebView] has finished loading a page.
+typedef void ScreenOrientationChanged(bool isLandscape);
+
 /// Specifies possible restrictions on automatic media playback.
 ///
 /// This is typically used in [WebView.initialMediaPlaybackPolicy].
@@ -169,6 +172,7 @@ class WebView extends StatefulWidget {
     this.onPageStarted,
     this.onPageFinished,
     this.onProgress,
+    this.onScreenOrientationChanged,
     this.debuggingEnabled = false,
     this.gestureNavigationEnabled = false,
     this.userAgent,
@@ -307,6 +311,9 @@ class WebView extends StatefulWidget {
 
   /// Invoked when a page is loading.
   final PageLoadingCallback onProgress;
+
+  /// Invoked when a page starts loading.
+  final ScreenOrientationChanged onScreenOrientationChanged;
 
   /// Controls whether WebView debugging is enabled.
   ///
@@ -537,6 +544,13 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
     }
   }
 
+  @override
+  void onScreenOrientationChanged(bool isLandscape) {
+    if (_widget.onScreenOrientationChanged != null) {
+      _widget.onScreenOrientationChanged(isLandscape);
+    }
+  }
+
   void _updateJavascriptChannelsFromSet(Set<JavascriptChannel> channels) {
     _javascriptChannels.clear();
     if (channels == null) {
@@ -713,6 +727,11 @@ class WebViewController {
   /// Returns the title of the currently loaded page.
   Future<String> getTitle() {
     return _webViewPlatformController.getTitle();
+  }
+
+  /// Returns the state of exit fullscreen.
+  Future<bool> exitFullscreen() {
+    return _webViewPlatformController.exitFullscreen();
   }
 }
 
