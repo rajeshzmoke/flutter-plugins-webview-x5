@@ -22,15 +22,13 @@ import io.flutter.plugin.common.MethodChannel;
 class FlutterWebChromeClient extends WebChromeClient {
 
     private static final String TAG = "FlutterWebChromeClient";
-    private final Context context;
     private final MethodChannel methodChannel;
     private boolean isFullscreen = false;
     private CustomViewCallback customViewCallback;
     private View customView;
     private ViewGroup rootView;
 
-    FlutterWebChromeClient(Context context, MethodChannel methodChannel, ViewGroup rootView) {
-        this.context = context;
+    FlutterWebChromeClient(MethodChannel methodChannel, ViewGroup rootView) {
         this.methodChannel = methodChannel;
         this.rootView = rootView;
     }
@@ -79,8 +77,11 @@ class FlutterWebChromeClient extends WebChromeClient {
     }
 
     boolean exitFullscreen() {
-        if (isFullscreen) onHideCustomView();
-        return isFullscreen;
+        if (isFullscreen) {
+            onHideCustomView();
+            return true;
+        }
+        return false;
     }
 
     private void onScreenOrientationChanged(boolean isFullscreen) {
@@ -88,11 +89,4 @@ class FlutterWebChromeClient extends WebChromeClient {
         args.put("isLandscape", isFullscreen);
         methodChannel.invokeMethod("onScreenOrientationChanged", args);
     }
-
-//    private DisplayMetrics getDisplay() {
-//        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        wm.getDefaultDisplay().getMetrics(displayMetrics);
-//        return displayMetrics;
-//    }
 }
