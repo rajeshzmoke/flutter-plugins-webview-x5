@@ -306,6 +306,12 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
                   public void onProgressChanged(WebView view, int progress) {
                     flutterWebViewClient.onLoadingProgress(progress);
                   }
+
+                  @Override
+                  public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                    if (FlutterWebViewFileChooser.onShowFileChooser(filePathCallback, fileChooserParams)) return true;
+                    return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+                  }
                 });
           }
         case "gestureNavigationEnabled":
