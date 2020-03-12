@@ -180,6 +180,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
         break;
       case "exitFullscreen":
         exitFullscreen(result);
+        break;
       default:
         result.notImplemented();
     }
