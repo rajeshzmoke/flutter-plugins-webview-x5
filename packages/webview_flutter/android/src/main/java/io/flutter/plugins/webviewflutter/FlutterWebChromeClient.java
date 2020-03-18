@@ -33,6 +33,7 @@ class FlutterWebChromeClient extends WebChromeClient {
         this.rootView = rootView;
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
@@ -42,13 +43,17 @@ class FlutterWebChromeClient extends WebChromeClient {
             return;
         }
         customView = view;
-        rootView.addView(customView);
-        customViewCallback = callback;
         Activity activity = WebViewFlutterPlugin.activityRef.get();
         if (activity != null) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            customView.setLayoutParams(new ViewGroup.LayoutParams(
+                    getMetricsDisplay(activity).heightPixels,
+                    getMetricsDisplay(activity).widthPixels));
         }
+
+        rootView.addView(customView);
+        customViewCallback = callback;
         isFullscreen = true;
         onScreenOrientationChanged(true);
     }
@@ -57,14 +62,14 @@ class FlutterWebChromeClient extends WebChromeClient {
     @Override
     public void onHideCustomView() {
         if (customView == null) return;
-        rootView.removeView(customView);
-        customViewCallback.onCustomViewHidden();
-        customView = null;
         Activity activity = WebViewFlutterPlugin.activityRef.get();
         if (activity != null) {
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        rootView.removeView(customView);
+        customViewCallback.onCustomViewHidden();
+        customView = null;
         isFullscreen = false;
         onScreenOrientationChanged(false);
         super.onHideCustomView();
@@ -82,6 +87,13 @@ class FlutterWebChromeClient extends WebChromeClient {
             return true;
         }
         return false;
+    }
+
+    private DisplayMetrics getMetricsDisplay(Activity activity) {
+        WindowManager manager = activity.getWindowManager();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics;
     }
 
     private void onScreenOrientationChanged(boolean isFullscreen) {
