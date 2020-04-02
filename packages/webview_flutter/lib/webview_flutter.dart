@@ -741,7 +741,7 @@ class CookieManager {
 
     assert(url != null && url.isNotEmpty);
     assert(name != null && name.isNotEmpty);
-    assert(value != null && value.isNotEmpty);
+    assert(value != null);
     assert(domain != null && domain.isNotEmpty);
     assert(path != null && path.isNotEmpty);
 
