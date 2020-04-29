@@ -61,11 +61,11 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     methodChannel.setMethodCallHandler(this);
 
     // function: using for video fullscreen
-    flutterWebChromeClient = new FlutterWebChromeClient(context,
+    flutterWebChromeClient = new FlutterWebChromeClient(
             methodChannel, (ViewGroup) webView.getRootView());
     webView.setWebChromeClient(flutterWebChromeClient);
 
-    webView.setWebChromeClient(new WebChromeClient() {
+    flutterWebChromeClient.addSubClient(new WebChromeClient() {
       @Override
       public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
         if (FlutterWebViewFileChooser.onShowFileChooser(filePathCallback, fileChooserParams)) return true;
@@ -315,7 +315,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
         case "hasProgressTracking":
           final boolean progressTrackingEnabled = (boolean) settings.get(key);
           if (progressTrackingEnabled) {
-            webView.setWebChromeClient(
+            flutterWebChromeClient.addSubClient(
                 new WebChromeClient() {
                   public void onProgressChanged(WebView view, int progress) {
                     flutterWebViewClient.onLoadingProgress(progress);

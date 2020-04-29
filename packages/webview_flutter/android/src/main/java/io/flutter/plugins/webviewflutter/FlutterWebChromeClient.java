@@ -2,7 +2,6 @@ package io.flutter.plugins.webviewflutter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.PermissionRequest;
-import android.webkit.WebChromeClient;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,7 +17,7 @@ import java.util.Map;
 
 import io.flutter.plugin.common.MethodChannel;
 
-class FlutterWebChromeClient extends WebChromeClient {
+class FlutterWebChromeClient extends MultiWebViewChromeClient {
 
     private static final String TAG = "FlutterWebChromeClient";
     private final MethodChannel methodChannel;
