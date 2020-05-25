@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.PermissionRequest;
+import android.webkit.WebView;
 
 import androidx.annotation.RequiresApi;
 
@@ -25,10 +26,15 @@ class FlutterWebChromeClient extends MultiWebViewChromeClient {
     private CustomViewCallback customViewCallback;
     private View customView;
     private ViewGroup rootView;
+    private boolean hasTitleReceivedCallback;
 
     FlutterWebChromeClient(MethodChannel methodChannel, ViewGroup rootView) {
         this.methodChannel = methodChannel;
         this.rootView = rootView;
+    }
+
+    void setHasTitleReceivedCallback(boolean hasTitleReceivedCallback) {
+        this.hasTitleReceivedCallback = hasTitleReceivedCallback;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -77,6 +83,15 @@ class FlutterWebChromeClient extends MultiWebViewChromeClient {
     @Override
     public void onPermissionRequest(PermissionRequest request) {
         request.grant(request.getResources());
+    }
+
+    @Override
+    public void onReceivedTitle(WebView view, String title) {
+        if (!hasTitleReceivedCallback) return;
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("title", title);
+        methodChannel.invokeMethod("onReceivedTitle", args);
     }
 
     boolean exitFullscreen() {

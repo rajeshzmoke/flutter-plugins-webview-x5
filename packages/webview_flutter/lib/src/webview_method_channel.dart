@@ -47,6 +47,9 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
       case 'onPageStarted':
         _platformCallbacksHandler.onPageStarted(call.arguments['url']);
         return null;
+      case 'onReceivedTitle':
+        _platformCallbacksHandler.onReceivedTitle(call.arguments['title']);
+        return null;
       case 'onScreenOrientationChanged':
         _platformCallbacksHandler.onScreenOrientationChanged(call.arguments['isLandscape']);
         return null;
@@ -158,6 +161,7 @@ class MethodChannelWebViewPlatform implements WebViewPlatformController {
       // only works in Android
       _addIfNonNull('navigationDelegateUrlPattern', settings.navigationDelegateUrlPattern);
     }
+    _addIfNonNull('hasTitleReceivedCallback', settings.hasTitleReceivedCallback);
     _addIfNonNull('debuggingEnabled', settings.debuggingEnabled);
     _addIfNonNull('mixedContentMode', settings.mixedContentMode?.index);
     _addIfNonNull(

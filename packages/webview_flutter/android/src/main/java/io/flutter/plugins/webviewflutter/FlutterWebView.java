@@ -310,6 +310,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
         case "navigationDelegateUrlPattern":
           flutterWebViewClient.setNavigationDelegateUrlPattern((String) settings.get(key));
           break;
+        case "hasTitleReceivedCallback":
+          flutterWebChromeClient.setHasTitleReceivedCallback((boolean) settings.get(key));
+          break;
         case "debuggingEnabled":
           final boolean debuggingEnabled = (boolean) settings.get(key);
 

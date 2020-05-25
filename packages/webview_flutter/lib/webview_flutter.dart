@@ -96,6 +96,9 @@ typedef void PageStartedCallback(String url);
 /// Signature for when a [WebView] has finished loading a page.
 typedef void PageFinishedCallback(String url);
 
+/// Signature for when a [WebView] has received a title.
+typedef void TitleReceivedCallback(String title);
+
 /// Signature for when a [WebView] is loading a page.
 typedef void PageLoadingCallback(int progress);
 
@@ -171,6 +174,7 @@ class WebView extends StatefulWidget {
     this.gestureRecognizers,
     this.onPageStarted,
     this.onPageFinished,
+    this.onReceivedTitle,
     this.onProgress,
     this.onScreenOrientationChanged,
     this.debuggingEnabled = false,
@@ -309,6 +313,9 @@ class WebView extends StatefulWidget {
   /// [WebViewController.evaluateJavascript] can assume this.
   final PageFinishedCallback onPageFinished;
 
+  /// Invoked when a page title has been changed.
+  final TitleReceivedCallback onReceivedTitle;
+
   /// Invoked when a page is loading.
   final PageLoadingCallback onProgress;
 
@@ -438,6 +445,7 @@ WebSettings _webSettingsFromWidget(WebView widget) {
     hasNavigationDelegate: widget.navigationDelegate != null,
     navigationDelegateUrlPattern: widget.navigationDelegateUrlPattern,
     hasProgressTracking: widget.onProgress != null,
+    hasTitleReceivedCallback: widget.onReceivedTitle != null,
     debuggingEnabled: widget.debuggingEnabled,
     mixedContentMode: widget.mixedContentMode,
     gestureNavigationEnabled: widget.gestureNavigationEnabled,
@@ -451,16 +459,19 @@ WebSettings _clearUnchangedWebSettings(
   assert(currentValue.javascriptMode != null);
   assert(currentValue.hasNavigationDelegate != null);
   assert(currentValue.hasProgressTracking != null);
+  assert(currentValue.hasTitleReceivedCallback != null);
   assert(currentValue.debuggingEnabled != null);
   assert(currentValue.userAgent.isPresent);
   assert(newValue.javascriptMode != null);
   assert(newValue.hasNavigationDelegate != null);
+  assert(newValue.hasTitleReceivedCallback != null);
   assert(newValue.debuggingEnabled != null);
   assert(newValue.userAgent.isPresent);
 
   JavascriptMode javascriptMode;
   bool hasNavigationDelegate;
   bool hasProgressTracking;
+  bool hasTitleReceivedCallback;
   bool debuggingEnabled;
   WebSetting<String> userAgent = WebSetting<String>.absent();
   if (currentValue.javascriptMode != newValue.javascriptMode) {
@@ -471,6 +482,9 @@ WebSettings _clearUnchangedWebSettings(
   }
   if (currentValue.hasProgressTracking != newValue.hasProgressTracking) {
     hasProgressTracking = newValue.hasProgressTracking;
+  }
+  if (currentValue.hasTitleReceivedCallback != newValue.hasTitleReceivedCallback) {
+    hasTitleReceivedCallback = newValue.hasTitleReceivedCallback;
   }
   if (currentValue.debuggingEnabled != newValue.debuggingEnabled) {
     debuggingEnabled = newValue.debuggingEnabled;
@@ -483,6 +497,7 @@ WebSettings _clearUnchangedWebSettings(
     javascriptMode: javascriptMode,
     hasNavigationDelegate: hasNavigationDelegate,
     hasProgressTracking: hasProgressTracking,
+    hasTitleReceivedCallback: hasTitleReceivedCallback,
     debuggingEnabled: debuggingEnabled,
     userAgent: userAgent,
   );
@@ -548,6 +563,13 @@ class _PlatformCallbacksHandler implements WebViewPlatformCallbacksHandler {
   void onScreenOrientationChanged(bool isLandscape) {
     if (_widget.onScreenOrientationChanged != null) {
       _widget.onScreenOrientationChanged(isLandscape);
+    }
+  }
+
+  @override
+  void onReceivedTitle(String title) {
+    if (_widget.onReceivedTitle != null) {
+      _widget.onReceivedTitle(title);
     }
   }
 

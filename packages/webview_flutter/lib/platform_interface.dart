@@ -32,6 +32,9 @@ abstract class WebViewPlatformCallbacksHandler {
   /// Invoked by [WebViewPlatformController] when a page is loading.
   void onProgress(int progress);
 
+  /// Invoked by [WebViewPlatformController] when a page title has been updated.
+  void onReceivedTitle(String title);
+
   /// Invoked by [WebViewPlatformController] when a page's orientation was changed.
   void onScreenOrientationChanged(bool isLandscape);
 }
@@ -244,6 +247,7 @@ class WebSettings {
     this.hasNavigationDelegate,
     this.navigationDelegateUrlPattern,
     this.hasProgressTracking,
+    this.hasTitleReceivedCallback,
     this.debuggingEnabled,
     this.mixedContentMode,
     this.gestureNavigationEnabled,
@@ -261,6 +265,9 @@ class WebSettings {
 
   /// Whether the [WebView] should track page loading progress.
   final bool hasProgressTracking;
+
+  /// Whether the [WebView] has a [TitleReceivedCallback] set.
+  final bool hasTitleReceivedCallback;
 
   /// Whether to enable the platform's webview content debugging tools.
   ///
@@ -289,7 +296,7 @@ class WebSettings {
 
   @override
   String toString() {
-    return 'WebSettings(javascriptMode: $javascriptMode, hasNavigationDelegate: $hasNavigationDelegate, hasProgressTracking: $hasProgressTracking, debuggingEnabled: $debuggingEnabled, gestureNavigationEnabled: $gestureNavigationEnabled, userAgent: $userAgent, mixedContentMode: $mixedContentMode)';
+    return 'WebSettings(javascriptMode: $javascriptMode, hasNavigationDelegate: $hasNavigationDelegate, hasProgressTracking: $hasProgressTracking, hasTitleReceivedCallback: $hasTitleReceivedCallback, debuggingEnabled: $debuggingEnabled, gestureNavigationEnabled: $gestureNavigationEnabled, userAgent: $userAgent, mixedContentMode: $mixedContentMode)';
   }
 }
 
