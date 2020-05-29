@@ -423,11 +423,7 @@
   if ([keyPath isEqualToString:NSStringFromSelector(@selector(title))]) {
     if (object == _webView && _hasTitleReceivedCallback) {
       [_channel invokeMethod:@"onReceivedTitle" arguments:@{@"title":_webView.title}];
-    } else {
-      [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-  } else {
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
 }
 
