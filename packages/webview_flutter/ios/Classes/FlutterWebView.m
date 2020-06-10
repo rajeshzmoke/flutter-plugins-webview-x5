@@ -66,6 +66,7 @@
   NSMutableSet* _javaScriptChannelNames;
   FLTWKNavigationDelegate* _navigationDelegate;
   FLTWKProgressionDelegate* _progressionDelegate;
+  bool _hasTitleReceivedCallback;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -89,6 +90,7 @@
     NSDictionary<NSString*, id>* settings = args[@"settings"];
 
     WKWebViewConfiguration* configuration = [[WKWebViewConfiguration alloc] init];
+    configuration.allowsInlineMediaPlayback = true;
     configuration.userContentController = userContentController;
     [self updateAutoMediaPlaybackPolicy:args[@"autoMediaPlaybackPolicy"]
                         inConfiguration:configuration];
@@ -108,6 +110,8 @@
       }
     }
 
+    [_webView addObserver:self forKeyPath:NSStringFromSelector(@selector(title)) options:NSKeyValueObservingOptionNew context:NULL];
+
     [self applySettings:settings];
     // TODO(amirh): return an error if apply settings failed once it's possible to do so.
     // https://github.com/flutter/flutter/issues/36228
@@ -121,6 +125,7 @@
 }
 
 - (void)dealloc {
+  [_webView removeObserver:self forKeyPath:NSStringFromSelector(@selector(title))];
   if (_progressionDelegate != nil) {
     [_progressionDelegate stopObservingProgress:_webView];
   }
@@ -299,6 +304,8 @@
         _progressionDelegate = [[FLTWKProgressionDelegate alloc] initWithWebView:_webView
                                                                          channel:_channel];
       }
+    } else if ([key isEqualToString:@"hasTitleReceivedCallback"]) {
+      _hasTitleReceivedCallback = [settings[key] boolValue];
     } else if ([key isEqualToString:@"debuggingEnabled"]) {
       // no-op debugging is always enabled on iOS.
     } else if ([key isEqualToString:@"gestureNavigationEnabled"]) {
@@ -410,6 +417,14 @@
     [_webView setCustomUserAgent:userAgent];
   } else {
     NSLog(@"Updating UserAgent is not supported for Flutter WebViews prior to iOS 9.");
+  }
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+  if ([keyPath isEqualToString:NSStringFromSelector(@selector(title))]) {
+    if (object == _webView && _hasTitleReceivedCallback) {
+      [_channel invokeMethod:@"onReceivedTitle" arguments:@{@"title":_webView.title}];
+    }
   }
 }
 

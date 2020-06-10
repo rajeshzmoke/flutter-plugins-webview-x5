@@ -55,6 +55,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     platformThreadHandler = new Handler(context.getMainLooper());
     // Allow local storage.
     webView.getSettings().setDomStorageEnabled(true);
+    webView.getSettings().setBuiltInZoomControls(true);
+    webView.getSettings().setDisplayZoomControls(false);
+    webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
 
     methodChannel = new MethodChannel(messenger, "plugins.flutter.io/webview_" + id);
     methodChannel.setMethodCallHandler(this);
@@ -307,6 +310,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
           break;
         case "navigationDelegateUrlPattern":
           flutterWebViewClient.setNavigationDelegateUrlPattern((String) settings.get(key));
+          break;
+        case "hasTitleReceivedCallback":
+          flutterWebChromeClient.setHasTitleReceivedCallback((boolean) settings.get(key));
           break;
         case "debuggingEnabled":
           final boolean debuggingEnabled = (boolean) settings.get(key);
